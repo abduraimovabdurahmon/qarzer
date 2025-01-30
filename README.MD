@@ -1,98 +1,169 @@
-# Telegraf.js Bot
+Here’s an updated **`README.md`** file for your **qarzer** project, reflecting the provided directory structure:
 
-A Node.js-based Telegram bot built with [Telegraf.js](https://telegraf.js.org/).
+---
 
-## Features
+# **qarzer - Telegram Debt-Tracking Bot**
 
-- Easily extendable and customizable.
-- Lightweight and fast.
-- Secure and supports `.env` configuration.
+`qarzer` is a Telegram bot designed to help users track debts, loans, and payments within a group of acquaintances. It allows users to lend or borrow money, keep track of loan statuses, make partial payments, and receive notifications when a loan is added or paid off.
 
-## Requirements
+---
 
-- Node.js (version 14 or later)
-- npm (Node Package Manager)
+## **Table of Contents:**
+- [Installation](#installation)
+- [Project Structure](#project-structure)
+- [Bot Flow](#bot-flow)
+- [How It Works](#how-it-works)
+- [Usage](#usage)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Getting Started
+---
 
-Follow these steps to set up and run the project on your local machine:
+## **Installation**
 
-### 1. Clone the Repository
+### Prerequisites:
+- **Node.js** version 16 or higher
+- **npm** or **yarn** package manager
+- **Telegram Bot Token** (You can get one from [BotFather](https://core.telegram.org/bots#botfather))
 
-```bash
-git clone https://github.com/abduraimovabdurahmon/telegrambot-scenes-basescene-example
-cd telegrambot-scenes-basescene-example
-```
-
-### 2. Install Dependencies
-
-Use npm to install the required dependencies:
-
-```bash
-npm install
-```
-
-### 3. Configure Environment Variables
-
-1. Copy the example environment configuration file to `.env`:
-
+### Steps:
+1. **Clone the repository:**
    ```bash
-   cp .env.example .env
+   git clone https://github.com/abduraimovabdurahmon/qarzer
+   cd telegrambot-scenes-basescene-example
    ```
 
-2. Open the `.env` file in your favorite text editor and fill in the required fields. For example:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-   ```env
+3. **Set up environment variables:**
+   Create a `.env` file in the root of your project and add your Telegram bot token:
+   ```ini
    BOT_TOKEN=your-telegram-bot-token
    ```
 
-   - `BOT_TOKEN`: Obtain this token from [BotFather](https://core.telegram.org/bots#botfather).
+4. **Run the bot:**
+   ```bash
+   npm run dev
+   ```
+   Or if you're in production:
+   ```bash
+   npm start
+   ```
 
-### 4. Run the Bot
+---
 
-To start the bot, run the following command:
+## **Project Structure**
 
-```bash
-node index
-```
-
-Alternatively, if you want to enable live-reloading during development, you can use [nodemon](https://www.npmjs.com/package/nodemon):
-
-```bash
-npx nodemon index
-```
-
-### 5. Interact with Your Bot
-
-Search for your bot on Telegram using the username you set up with BotFather and start chatting!
-
-## Project Structure
-
-The project structure is organized as follows:
+Here’s the directory structure of the `qarzer` project:
 
 ```
 .
-├── README.MD           # Documentation for the project, detailing setup, usage, and features.
-├── form.json           # JSON file, likely used for managing form data or configuration.
-├── index.js            # Entry point of the bot; initializes the bot and handles core logic.
-├── scenes/             # Directory for different bot scenes, handling specific user interactions.
-│   ├── fish.js         # Scene script for handling interactions related to "fish."
-│   └── phone.js        # Scene script for handling interactions related to "phone."
-│   ...                 # Other scenes
-└── stage.js            # Manages the stages and scene transitions for the bot.
-
+├── README.MD                # Project overview and documentation
+├── data
+│   ├── database.sqlite       # SQLite database for storing user data and loans
+│   └── session.json          # Session data for the bot
+├── package-lock.json         # NPM lock file
+├── package.json              # NPM package file with dependencies
+├── src
+│   ├── bot
+│   │   ├── scenes            # Scene files for guiding users through interactions
+│   │   │   └── start.ts      # Scene for starting the bot interaction
+│   │   └── stage
+│   │       └── stage.ts      # Scene stage for managing the flow of scenes
+│   ├── data-source.ts        # Database connection and TypeORM configuration
+│   ├── entity
+│   │   └── User.ts           # User entity definition for database
+│   ├── index.ts              # Entry point for starting the bot
+│   ├── repository
+│   │   └── UserRepository.ts # Repository for accessing user data
+│   └── service
+│       └── userService.ts    # Service for handling user-related operations
+└── tsconfig.json             # TypeScript configuration
 ```
 
-## Scripts
+---
 
-- `npm start`: Starts the bot using Node.js.
-- `npm run dev`: Starts the bot with `nodemon` for live reloading (if configured in `package.json`).
+## **Bot Flow**
 
-## Contributing
+1. **Start the Bot:**
+   When the user presses the "Start" button, the bot sends a welcome message and presents a set of options such as creating a new group, lending money, or checking existing loans.
 
-Feel free to fork this project, submit pull requests, or open issues. Contributions are always welcome!
+2. **Create a Group:**
+   The user can create a new group, and other users can join via an invitation link that the bot sends.
 
-## License
+3. **Lend/Borrow Money:**
+   Once in the group, users can lend or borrow money. They will be prompted to enter the loan amount and optionally provide a description for the loan.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+4. **Tracking and Paying Loans:**
+   Users can view all loans in the group, make partial payments, or delete loans as necessary.
 
+---
+
+## **How It Works**
+
+### **User Creation**
+Upon the first interaction with the bot, the user is registered in the database with their Telegram ID, username, and full name.
+
+### **Group Management**
+Users can create groups, and others can join using an invitation link. Each group is independent, and only members of the group can see and interact with the loans within that group.
+
+### **Loans and Debts**
+- **Lend Money:** The lender creates a new loan record with the amount, recipient, and description.
+- **Borrow Money:** The borrower receives a notification and can keep track of the loan status.
+- **Partial Payment:** The borrower can make partial payments, and the bot will update the loan balance.
+- **Loan Deletion:** The loan can be deleted if necessary.
+
+### **Database**
+The bot uses **SQLite** for data storage. **TypeORM** is used for database operations. The database stores:
+- Users (Telegram ID, username, name)
+- Groups (IDs of users who are part of each group)
+- Loans (amount, lender, borrower, description)
+- Payments (tracking of partial payments made by borrowers)
+
+### **Scenes**
+The bot uses **Telegraf.js** with **Scenes** to guide the user through different interactions such as entering their name, phone number, or loan details. This structured flow ensures the user provides all the necessary information.
+
+---
+
+## **Usage**
+
+### 1. **Start the bot:**
+   The bot starts by welcoming the user and offering options like creating a new group or lending money.
+
+### 2. **Create a new group:**
+   The user can create a group by pressing the corresponding button. An invitation link will be sent to the user, which they can share with their acquaintances.
+
+### 3. **Lend/Borrow Money:**
+   After joining a group, users can lend or borrow money. They will need to input the loan amount and provide an optional description.
+
+### 4. **Track and manage loans:**
+   Users can view all loans in their group, make partial payments, or delete loans. The bot keeps track of the loan statuses and sends notifications when payments are made.
+
+---
+
+## **Development**
+
+### **Adding new features or modifying the bot:**
+- Modify or add scenes in the `/src/bot/scenes` folder.
+- Update the database schema in `/src/entity` if necessary.
+- Add new commands or functionalities in `/src/index.ts` or create new service methods in `/src/service`.
+
+---
+
+## **Contributing**
+
+Feel free to fork the repository and submit a pull request if you want to contribute to the development of the bot. All contributions are welcome!
+
+---
+
+## **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+Let me know if you need more adjustments or additions to the README!
