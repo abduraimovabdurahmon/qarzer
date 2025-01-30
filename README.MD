@@ -31,7 +31,7 @@ Here’s an updated **`README.md`** file for your **qarzer** project, reflecting
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/abduraimovabdurahmon/qarzer
-   cd telegrambot-scenes-basescene-example
+   cd qarzer
    ```
 
 2. **Install dependencies:**
