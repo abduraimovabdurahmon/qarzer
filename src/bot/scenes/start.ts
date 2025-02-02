@@ -14,24 +14,14 @@ start.enter(async (ctx) => {
         // bazada bor yoki yo'qligini tekshirish
         const exists = await userService.userExists(ctx.from?.id as number);
         // agar bazada bor bo'lsa
+
         if (exists) {
-            return ctx.reply("Siz ro'yxatdan o'tgansiz");
+            return ctx.scene.enter("main");
         }
         else{
-            ctx.reply("Siz ro'yxatdan o'tmadingiz");
             await userService.registerUser(ctx.from?.id as number, ctx.from?.username as string, ctx.from?.first_name as string, ctx.from?.last_name as string);
-            ctx.reply("Siz ro'yxatdan o'tdingiz");
-
+            return ctx.scene.enter("main");
         }
-
-
-
-
-
-
-
-
-
 
     } catch (error) {
         console.error(error);

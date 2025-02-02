@@ -4,15 +4,14 @@ dotenv.config();
 
 import { Scenes } from "telegraf";
 
-interface MyContext extends Scenes.SceneContext {
-    session: any;
-}
+
 
 // Import Telegraf and required modules
 import { Telegraf, Context } from 'telegraf';
 import * as LocalSession from 'telegraf-session-local';
 import stage from './bot/stage/stage'; // Import stage for scenes
 import { AppDataSource } from './data-source';
+import { MyContext } from './bot/types';
 
 
 // Create the bot instance
